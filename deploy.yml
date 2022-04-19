@@ -1,0 +1,36 @@
+- name: Deploy SRE API
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: Ensure packages are installed
+      apt:
+        pkg:
+          - git
+          - docker.io
+          - python3-pip
+    
+    - name: Pip install
+      pip:
+        name: docker
+      
+    - name: Clone repo
+      ansible.builtin.git:
+        repo: 'https://github.com/yashvanzara/sre-assignment-api.git'
+        dest: /opt/sre-api
+    
+    # TODO: Move constants to a variable
+    - name: Build Docker image
+      docker_image:
+        build:
+          path: /opt/sre-api
+        tag: latest
+        name: sre-api
+        source: build
+    
+    - name: Run docker container
+      docker_container:
+        name: sre-api
+        image: sre-api
+        ports:
+          - "7777:7777"
