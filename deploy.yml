@@ -32,5 +32,7 @@
       docker_container:
         name: sre-api
         image: sre-api
+        state: started
+        restart: yes
         ports:
           - "7777:7777"
